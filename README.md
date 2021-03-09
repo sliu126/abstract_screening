@@ -1,6 +1,6 @@
 # abstract_screening
 
-The datasets are in the full_exports_level1_level2_labels folder. Each review has its own folder, named by its review number. Below are all the reviews available (we list the review number and the corresponding review name in the paper):
+The datasets are in the full_exports_level1_level2_labels folder. Each review has its own folder, named by its review number. Below are all the reviews available (we list the review number and its corresponding review name, described in the paper):
 
 Review # | Review Name
 -------- | -----------
@@ -26,3 +26,7 @@ Review # | Review Name
 10182    | Decision Aids
 10183    | Alternative Medicine
 10184    | Appendicitis
+
+The data are in the labels_##.csv files in each project folder. We are mainly interested in the "abstract", "level1_labels" and "level2_labels" fields in our experiments. But other fields are also provided for those who are interested.
+
+We also provide entry indices for train/dev/test split in our experiments. They are pickled as lists of indices and are in the same folders as the main data csv files. However, one can of course create his own split as well.
