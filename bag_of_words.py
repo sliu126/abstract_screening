@@ -81,7 +81,7 @@ class ClassImbalanceRedux:
 		np.save(path, arr = self)
 
 
-def bag_of_words(project, training_ratio):
+def bag_of_words(project):
 	project_file = "full_exports_level1_level2_labels/" + str(project) + "/labels_" + str(project) + ".csv"
 	train_indices = pickle.load(open("full_exports_level1_level2_labels/" + str(project) + "/train_indices.pkl", "rb"))
 	# print(project_file)
@@ -89,7 +89,7 @@ def bag_of_words(project, training_ratio):
 	test_indices = pickle.load(open("full_exports_level1_level2_labels/" + str(project) + "/test_indices.pkl", "rb"))
 	
 	train_indices_size = len(train_indices)
-	train_indices = train_indices[0:int(train_indices_size * training_ratio)]
+	train_indices = train_indices[0:train_indices_size]
 
 	dataset = pd.read_csv(project_file, encoding="ISO-8859-1", converters={'level2_labels':str})
 	train_data = dataset.loc[train_indices, :]
@@ -175,25 +175,6 @@ def bag_of_words(project, training_ratio):
 
 	print("classifying...")
 
-	'''
-	print("Majority Vote:")
-	y_pred = [-1] * len(y_test)
-	print(classification_report(y_test, y_pred))
-	_yield = compute_yield(z_test, y_pred)
-	_burden = compute_burden(y_test, y_pred)
-	print(_yield)
-	print(_burden)
-	'''
-	print("Naive Bayes:")
-	classifier = GaussianNB()
-	cir = ClassImbalanceRedux(classifier)
-	cir.fit(X_train, y_train_L1)
-	y_pred = cir.predict(X_test)
-	# print(classification_report(y_test, y_pred))
-	_yield = compute_yield(y_test_L1, y_pred, num_pos_train_set)
-	_burden = compute_burden(y_test_L2, y_pred, train_set_size, total_dataset_size)
-	print("yield: %.4f" % _yield)
-	print("burden: %.4f" % _burden)
 	print("Logistic Regression:")
 	classifier = LogisticRegression(random_state = 0)
 	cir = ClassImbalanceRedux(classifier)
@@ -209,36 +190,6 @@ def bag_of_words(project, training_ratio):
 	cir = ClassImbalanceRedux(classifier)
 	cir.fit(X_train, y_train_L1)
 	y_pred = cir.predict(X_test)	
-	# print(classification_report(y_test, y_pred))
-	_yield = compute_yield(y_test_L1, y_pred, num_pos_train_set)
-	_burden = compute_burden(y_test_L2, y_pred, train_set_size, total_dataset_size)
-	print("yield: %.4f" % _yield)
-	print("burden: %.4f" % _burden)
-	print("MLP:")
-	classifier = MLPClassifier(alpha=1, max_iter=1000, hidden_layer_sizes=(100,100,100))
-	cir = ClassImbalanceRedux(classifier)
-	cir.fit(X_train, y_train_L1)
-	y_pred = cir.predict(X_test)
-	# print(classification_report(y_test, y_pred))
-	_yield = compute_yield(y_test_L1, y_pred, num_pos_train_set)
-	_burden = compute_burden(y_test_L2, y_pred, train_set_size, total_dataset_size)
-	print("yield: %.4f" % _yield)
-	print("burden: %.4f" % _burden)
-	print("Random Forest:")
-	classifier = RandomForestClassifier(max_depth=5, n_estimators=10)
-	cir = ClassImbalanceRedux(classifier)
-	cir.fit(X_train, y_train_L1)
-	y_pred = cir.predict(X_test)
-	# print(classification_report(y_test, y_pred))
-	_yield = compute_yield(y_test_L1, y_pred, num_pos_train_set)
-	_burden = compute_burden(y_test_L2, y_pred, train_set_size, total_dataset_size)
-	print("yield: %.4f" % _yield)
-	print("burden: %.4f" % _burden)
-	print("Decision Tree:")
-	classifier = DecisionTreeClassifier(max_depth=5)
-	cir = ClassImbalanceRedux(classifier)
-	cir.fit(X_train, y_train_L1)
-	y_pred = cir.predict(X_test)
 	# print(classification_report(y_test, y_pred))
 	_yield = compute_yield(y_test_L1, y_pred, num_pos_train_set)
 	_burden = compute_burden(y_test_L2, y_pred, train_set_size, total_dataset_size)
@@ -293,8 +244,7 @@ def preprocess_abs(abstract):
 
 def main():
 	project = sys.argv[1]
-	training_ratio = float(sys.argv[2])
-	bag_of_words(project, training_ratio)
+	bag_of_words(project)
 
 if __name__ == "__main__":
 	main()
